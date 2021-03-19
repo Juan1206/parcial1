@@ -13,13 +13,19 @@ namespace parcial1
 {
     public partial class Form1 : Form
     {
-        List<Prestamo> prestamos = new List<Prestamo>(); 
-            
+        List<Prestamo> prestamos = new List<Prestamo>();
+        List<Listado> lista = new List<Listado>();
+        List<Alumno> alumnos = new List<Alumno>();
+        List<Libro> libros = new List<Libro>();
+
+
 
         public Form1()
         {
             InitializeComponent();
             Leer();
+            Leer2();
+            Leer3();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -62,6 +68,68 @@ namespace parcial1
                 prestamos.Add(prestamoTemp);
             }
             reader.Close();
+        }
+        private void Leer2()
+        {
+            FileStream stream = new FileStream("libros.txt", FileMode.Open, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+
+            while (reader.Peek() > -1)
+            {
+                Libro libroTemp = new Libro();
+
+              libroTemp.Codigo = Int32.Parse(reader.ReadLine());
+                libroTemp.Titulo = reader.ReadLine();
+                libroTemp.Autor= reader.ReadLine();
+              libroTemp.Año= Int32.Parse(reader.ReadLine());
+               
+                libros.Add(libroTemp);
+            }
+            reader.Close();
+        }
+        private void Leer3()
+        {
+            FileStream stream = new FileStream("estudiantes.txt", FileMode.Open, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+
+            while (reader.Peek() > -1)
+            {
+                Alumno esTemp = new Alumno();
+
+                esTemp.Carnet = Int32.Parse(reader.ReadLine());
+              esTemp.Nombre= reader.ReadLine();
+                esTemp.Direccion = reader.ReadLine();
+               
+
+                alumnos.Add(esTemp);
+            }
+            reader.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < libros.Count; i++)
+            {
+                for (int j = 0; j < prestamos.Count; j++)
+                {
+                    if (libros[i].Codigo == prestamos[j].Codigo_Libro)
+                    {
+                        Listado datos = new Listado();
+                        datos.Nombre = alumnos[i].Nombre;
+                        datos.Titulo = libros[j].Titulo;
+                        datos.Fecha_Prestamo = prestamos[i].Fecha_Prestamo;
+                        datos.Fecha_Devolucion = prestamos[i].Fecha_Devolucion;
+                    
+
+                        lista.Add(datos);
+                    }
+                }
+
+
+            }
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = lista;
+            dataGridView1.Refresh();
         }
     }
 }
